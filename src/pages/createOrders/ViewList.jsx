@@ -1,14 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
-import ReactToPrint from 'react-to-print'
-import Layout from '../../layout/Layout'
-import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
-import BASE_URL from '../../base/BaseUrl';
-import moment from 'moment';
-import { toast } from 'sonner';
+import React, { useEffect, useRef, useState } from "react";
+import ReactToPrint from "react-to-print";
+import Layout from "../../layout/Layout";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import BASE_URL from "../../base/BaseUrl";
+import moment from "moment";
+import { toast } from "sonner";
+import { ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const ViewList = () => {
-    const [viewOrder, setViewOrder] = useState(null);
+  const [viewOrder, setViewOrder] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -24,10 +26,9 @@ const ViewList = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         setViewOrder(response.data);
-
       } catch (error) {
         toast.error(error.response.data.message, error);
         console.error(error.response.data.message, error);
@@ -36,15 +37,14 @@ const ViewList = () => {
       }
     };
     fetchViewOrder();
-  
   }, [1]);
 
   if (loading) {
     return (
       <Layout>
-      <div className="flex justify-center items-center h-56">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
+        <div className="flex justify-center items-center h-56">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
       </Layout>
     );
   }
@@ -52,39 +52,48 @@ const ViewList = () => {
   if (!viewOrder) {
     return (
       <Layout>
-      <div className="flex justify-center flex-col mt-48 items-center h-56">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        <div className="text-gray-400 animate-pulse">Loading</div>
-      </div>
+        <div className="flex justify-center flex-col mt-48 items-center h-56">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          <div className="text-gray-400 animate-pulse">Loading</div>
+        </div>
       </Layout>
     );
   }
   return (
     <Layout>
       <div className="p-4  bg-white h-screen w-full mx-auto ">
-      <div className=" flex flex-row items-center justify-end gap-2">
-        <ReactToPrint
-          trigger={() => (
-            <button className=" bg-blue-500 text-white py-2 px-4 rounded mb-4">
-              Print Order 
-            </button>
-          )}
-          content={() => printRef.current}
-        />
-  </div>
+        <div className=" flex flex-row items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <Link to="/order-list">
+              <ArrowLeft className="text-white bg-blue-500 p-1 w-8 h-8 cursor-pointer rounded-full hover:bg-blue-600 transition-colors" />
+            </Link>
+            <h2 className="text-gray-800 text-xl font-semibold">View Order</h2>
+          </div>
+          <ReactToPrint
+            trigger={() => (
+              <button className=" bg-blue-500 text-white py-2 px-4 rounded">
+                Print Order
+              </button>
+            )}
+            content={() => printRef.current}
+          />
+        </div>
         <div ref={printRef} className="print-container ">
           <div className="grid grid-cols-3 gap-4 mb-6 border-b pb-4">
             <div>
               <p className="font-semibold text-black">Client:</p>
               <p className="text-black">{viewOrder.order?.full_name}</p>
             </div>
+
             <div className="text-center">
               <p className="font-semibold text-black">Order No:</p>
               <p className="text-black">{viewOrder.order?.orders_no}</p>
             </div>
             <div className="text-right">
               <p className="font-semibold text-black">Order Date:</p>
-              <p className="text-black">{moment(viewOrder.order.orders_date).format('DD-MM-YYYY')}</p>
+              <p className="text-black">
+                {moment(viewOrder.order.orders_date).format("DD-MM-YYYY")}
+              </p>
             </div>
           </div>
 
@@ -107,6 +116,8 @@ const ViewList = () => {
                       MM
                       <p className="text-sm text-black">
                         Brand: {item.orders_sub_brand}
+                        <br />
+                        {item.orders_sub_design_no}
                       </p>
                     </td>
                     <td className="p-2 border border-black">
@@ -128,7 +139,7 @@ const ViewList = () => {
                     {viewOrder.orderSub.reduce(
                       (total, item) =>
                         total + parseFloat(item.orders_sub_quantity),
-                      0
+                      0,
                     )}
                   </td>
                 </tr>
@@ -198,7 +209,7 @@ const ViewList = () => {
       `}
       </style>
     </Layout>
-  )
-}
+  );
+};
 
-export default ViewList
+export default ViewList;

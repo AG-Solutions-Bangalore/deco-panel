@@ -8,30 +8,22 @@ import BASE_URL from "../../../base/BaseUrl";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
 import {
-  Button,
   Chip,
   CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   IconButton,
   Stack,
   Tooltip,
 } from "@mui/material";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import { Edit, Visibility } from "@mui/icons-material";
-import moment from "moment";
 
+import moment from "moment";
 import QuotationsFilter from "../../../components/QuotationsFilter";
 import { toast } from "sonner";
 
-const QuotationsSubmittedList = () => {
+const CompletedQuation = () => {
   const [brandListData, setBrandListData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
 
   const navigate = useNavigate();
 
@@ -41,7 +33,7 @@ const QuotationsSubmittedList = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BASE_URL}/api/web-fetch-submit-quotation-list`,
+          `${BASE_URL}/api/web-fetch-quotation-list`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -59,34 +51,6 @@ const QuotationsSubmittedList = () => {
     };
     fetchCountryData();
   }, []);
-
-  const handleOpen = (id) => {
-    setSelectedId(id);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedId(null);
-  };
-
-  const QuotationProceed = () => {
-    axios({
-      url: BASE_URL + "/api/web-update-proceed/" + selectedId,
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }).then((res) => {
-      if (res.data.code == 200) {
-        toast.success("Quotation Updated Sucessfully");
-        setBrandListData(res.data.quotation);
-        handleClose();
-      } else {
-        toast.error("Failed to convert Quotation ");
-      }
-    });
-  };
 
   const columns = [
     {
@@ -125,7 +89,7 @@ const QuotationsSubmittedList = () => {
     //     customBodyRender: (quotation_status) => {
     //       return quotation_status === "Quotation" ? (
     //         <Stack>
-    //           <Chip className="md:w-[45%]" label="Quotation" color="primary" />
+    //           <Chip className="md:w-[40%]" label="Quotation" color="primary" />
     //         </Stack>
     //       ) : quotation_status === "Cancel" ? (
     //         <Stack>
@@ -177,43 +141,35 @@ const QuotationsSubmittedList = () => {
         },
       },
     },
+
     {
       name: "id",
-      label: "ACTION",
+      label: "VIEW",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (id) => (
-          <div className="flex items-center space-x-1">
-            {localStorage.getItem("user_type_id") != 1 && (
-              <>
-                <Tooltip title="Edit" placement="top">
-                  <IconButton aria-label="Edit" size="small">
-                    <Link to={`/edit-quotations/${id}`}>
-                      <Edit fontSize="small" />
+        customBodyRender: (id) => {
+          return (
+            <div className="flex items-center space-x-2">
+              {/* <Tooltip title="View" placement="top">
+                  <IconButton aria-label="View">
+                    <Link
+                      to={`/view-quotions/${id}`}
+                    >
+                      <Visibility />
                     </Link>
                   </IconButton>
-                </Tooltip>
-                <Tooltip title="Processing Quotation" placement="top">
-                  <IconButton
-                    aria-label="Processing Quotation"
-                    size="small"
-                    onClick={() => handleOpen(id)}
-                  >
-                    <ConfirmationNumberIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </>
-            )}
-            <Tooltip title="View" placement="top">
-              <IconButton aria-label="View" size="small">
-                <Link to={`/view-quotions/${id}`}>
-                  <Visibility fontSize="small" />
-                </Link>
-              </IconButton>
-            </Tooltip>
-          </div>
-        ),
+                </Tooltip> */}
+              <Tooltip title="View" placement="top">
+                <IconButton aria-label="View" size="small">
+                  <Link to={`/view-quotions/${id}`}>
+                    <Visibility fontSize="small" />
+                  </Link>
+                </IconButton>
+              </Tooltip>
+            </div>
+          );
+        },
       },
     },
   ];
@@ -241,36 +197,14 @@ const QuotationsSubmittedList = () => {
 
       <div className="mt-1">
         <MUIDataTable
-          title="Open Quotation"
+          title="Completed Quotation"
           data={brandListData ? brandListData : []}
           columns={columns}
           options={options}
         />
       </div>
-
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Confirmation"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Do you want to change the quotation to process?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            No
-          </Button>
-          <Button onClick={QuotationProceed} color="primary" autoFocus>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Layout>
   );
 };
 
-export default QuotationsSubmittedList;
+export default CompletedQuation;

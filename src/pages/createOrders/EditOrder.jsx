@@ -31,6 +31,7 @@ const EditOrder = () => {
   const useTemplate = {
     orders_sub_product_id: "",
     orders_sub_quantity: "",
+    orders_sub_design_no: "",
     id: "",
   };
   const [users, setUsers] = useState([useTemplate]);
@@ -53,7 +54,7 @@ const EditOrder = () => {
     const updatedUsers = users.map((user, i) =>
       index === i
         ? Object.assign(user, { [e.target.name]: e.target.value })
-        : user
+        : user,
     );
     setUsers(updatedUsers);
   };
@@ -62,7 +63,7 @@ const EditOrder = () => {
     const updatedUsers = users.map((user, i) =>
       index === i
         ? { ...user, orders_sub_product_id: selectedOption.value }
-        : user
+        : user,
     );
     setUsers(updatedUsers);
   };
@@ -76,13 +77,13 @@ const EditOrder = () => {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         );
         setOrder(res.data.order);
         setUsers(res.data.orderSub);
       } catch (error) {
-         toast.error(error.response.data.message, error);
-               console.error(error.response.data.message, error);
+        toast.error(error.response.data.message, error);
+        console.error(error.response.data.message, error);
       }
     };
 
@@ -95,8 +96,6 @@ const EditOrder = () => {
       [e.target.name]: e.target.value,
     });
   };
-
-
 
   useEffect(() => {
     axios
@@ -143,7 +142,7 @@ const EditOrder = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
 
       if (response.data.code == 200) {
@@ -159,8 +158,8 @@ const EditOrder = () => {
         }
       }
     } catch (error) {
-         toast.error(error.response.data.message, error);
-             console.error(error.response.data.message, error);
+      toast.error(error.response.data.message, error);
+      console.error(error.response.data.message, error);
     } finally {
       setIsButtonDisabled(false);
     }
@@ -204,15 +203,17 @@ const EditOrder = () => {
   return (
     <Layout>
       <div className="container mx-auto">
-        
         <div className="bg-white rounded-t-lg shadow-lg p-1 mx-auto w-full">
-  <div className="flex items-center gap-3 px-4 py-2">
-    <Link to="/pending-order-list">
-      <ArrowLeft className="text-white bg-blue-500 p-1 w-8 h-8 cursor-pointer rounded-full hover:bg-blue-600 transition-colors" />
-    </Link>
-    <h2 className="text-gray-800 text-xl font-semibold">  Edit Pending Order</h2>
-  </div>
-</div>
+          <div className="flex items-center gap-3 px-4 py-2">
+            <Link to="/pending-order-list">
+              <ArrowLeft className="text-white bg-blue-500 p-1 w-8 h-8 cursor-pointer rounded-full hover:bg-blue-600 transition-colors" />
+            </Link>
+            <h2 className="text-gray-800 text-xl font-semibold">
+              {" "}
+              Edit Pending Order
+            </h2>
+          </div>
+        </div>
         <div className="bg-white rounded-b-lg mt-1 p-6">
           <form onSubmit={onSubmit} autoComplete="off" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -232,7 +233,7 @@ const EditOrder = () => {
                   className="cursor-not-allowed"
                 />
               </div>
-              
+
               {/* Date Input */}
               <div>
                 <Input
@@ -252,7 +253,7 @@ const EditOrder = () => {
                   required
                   name="orders_status"
                   value={statusOptions.find(
-                    (opt) => opt.value === order.orders_status
+                    (opt) => opt.value === order.orders_status,
                   )}
                   options={statusOptions}
                   onChange={(selectedOption) =>
@@ -278,12 +279,12 @@ const EditOrder = () => {
                 className="grid grid-cols-1 md:grid-cols-3 gap-6"
               >
                 {/* Product Dropdown */}
-                <div className="md:col-span-2">
+                <div>
                   <Select
                     required
                     name="orders_sub_product_id"
                     value={productOptions.find(
-                      (opt) => opt.value === user.orders_sub_product_id
+                      (opt) => opt.value === user.orders_sub_product_id,
                     )}
                     options={productOptions}
                     onChange={(selectedOption) =>
@@ -302,11 +303,18 @@ const EditOrder = () => {
                   <Input
                     required
                     label="Quantity"
-                   
                     name="orders_sub_quantity"
                     value={user.orders_sub_quantity}
                     onChange={(e) => onChange(e, index)}
                     maxLength={6}
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="Design No"
+                    name="orders_sub_design_no"
+                    value={user.orders_sub_design_no}
+                    onChange={(e) => onChange(e, index)}
                   />
                 </div>
               </div>
