@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import ReactToPrint from "react-to-print";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import Layout from "../../../layout/Layout";
 import moment from "moment";
 import html2pdf from "html2pdf.js";
 import { toast } from "sonner";
-
+import { ArrowLeft } from "lucide-react";
 
 const ViewQuotions = () => {
   const [viewQuotions, setViewQuotions] = useState(null);
@@ -31,15 +31,14 @@ const ViewQuotions = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         setViewQuotions(response.data?.quotation);
         setViewSubQuotions(response.data?.quotationSub);
         setQuotationSubSum(response.data?.quotationSubSum);
-   
       } catch (error) {
         toast.error(error.response.data.message, error);
-        console.error(error.response.data.message, error)
+        console.error(error.response.data.message, error);
       } finally {
         setLoading(false);
       }
@@ -51,7 +50,7 @@ const ViewQuotions = () => {
   //   try {
   //     setWhatsappLoading(true);
   //     const element = printRef.current;
-  
+
   //     const options = {
   //       margin: 10,
   //       filename: "Quotation.pdf",
@@ -68,20 +67,20 @@ const ViewQuotions = () => {
   //       },
   //       pagebreak: { mode: "avoid-all" },
   //     };
-  
+
   //     const pdfOutput = await html2pdf()
   //       .from(element)
   //       .set(options)
   //       .toPdf()
   //       .get("pdf");
-  
+
   //     const pdfBlob = pdfOutput.output("blob");
   //     const file = new File([pdfBlob], "Quotation.pdf", {
   //       type: "application/pdf",
   //     });
-  
+
   //     const message = `Quotation Details:\n\nClient: ${viewQuotions?.full_name || ""}\nQuotation No: ${viewQuotions?.quotation_no || ""}\nDate: ${viewQuotions?.quotation_date || ""}\n\nPlease find the attached quotation.`;
-  
+
   //     if (
   //       navigator.share &&
   //       navigator.canShare &&
@@ -93,9 +92,9 @@ const ViewQuotions = () => {
   //       });
   //       return;
   //     }
-  
+
   //     const fileUrl = URL.createObjectURL(file);
-  
+
   //     if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
   //       if (navigator.share) {
   //         try {
@@ -109,19 +108,19 @@ const ViewQuotions = () => {
   //           console.log("Mobile share failed:", mobileShareError);
   //         }
   //       }
-  
+
   //       const whatsappUrl = `whatsapp://send?text=${encodeURIComponent(message)}`;
   //       window.location.href = whatsappUrl;
-  
+
   //       setTimeout(() => {
   //         const webWhatsappUrl = `https://web.whatsapp.com/send?text=${encodeURIComponent(message)}`;
   //         window.open(webWhatsappUrl, "_blank");
   //       }, 1000);
-  
+
   //       URL.revokeObjectURL(fileUrl);
   //       return;
   //     }
-  
+
   //     const webWhatsappUrl = `https://web.whatsapp.com/send?text=${encodeURIComponent(message)}`;
   //     window.open(webWhatsappUrl, "_blank");
   //   } catch (error) {
@@ -135,7 +134,7 @@ const ViewQuotions = () => {
     try {
       setWhatsappLoading(true);
       const element = printRef.current;
-  
+
       const options = {
         margin: 10,
         filename: "Quotation.pdf",
@@ -152,24 +151,22 @@ const ViewQuotions = () => {
         },
         pagebreak: { mode: "avoid-all" },
       };
-  
+
       const pdfOutput = await html2pdf()
         .from(element)
         .set(options)
         .toPdf()
         .get("pdf");
-  
+
       const pdfBlob = pdfOutput.output("blob");
       const file = new File([pdfBlob], "Quotation.pdf", {
         type: "application/pdf",
       });
-  
+
       const message = `Quotation Details:\n\nClient: ${viewQuotions?.full_name || ""}\nQuotation No: ${viewQuotions?.quotation_no || ""}\nDate: ${viewQuotions?.quotation_date || ""}\n\nPlease find the attached quotation.`;
-  
-      
+
       alert("PDF generated successfully!");
-  
-    
+
       if (navigator.share) {
         try {
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -179,7 +176,6 @@ const ViewQuotions = () => {
             });
             return;
           } else {
-           
             const fileUrl = URL.createObjectURL(file);
             await navigator.share({
               text: message,
@@ -189,30 +185,27 @@ const ViewQuotions = () => {
             return;
           }
         } catch (shareError) {
-          console.log("Navigator share failed, falling back to WhatsApp:", shareError);
-         
+          console.log(
+            "Navigator share failed, falling back to WhatsApp:",
+            shareError,
+          );
         }
       }
-  
+
       const encodedMessage = encodeURIComponent(message);
-      
-     
+
       if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        
         const whatsappUrl = `whatsapp://send?text=${encodedMessage}`;
         window.location.href = whatsappUrl;
-        
-      
+
         setTimeout(() => {
           const webWhatsappUrl = `https://web.whatsapp.com/send?text=${encodedMessage}`;
           window.open(webWhatsappUrl, "_blank");
         }, 1500);
       } else {
-       
         const webWhatsappUrl = `https://web.whatsapp.com/send?text=${encodedMessage}`;
         window.open(webWhatsappUrl, "_blank");
       }
-  
     } catch (error) {
       console.error("Error in whatsappPdf:", error);
       alert("There was an error sharing the PDF. Please try again.");
@@ -244,52 +237,54 @@ const ViewQuotions = () => {
   return (
     <Layout>
       <div className="p-4  bg-white h-screen w-full mx-auto ">
-       <div className=" flex flex-row items-center justify-end gap-2">
-       <ReactToPrint
-          trigger={() => (
-            <button className=" bg-blue-500 text-white py-2 px-4 rounded mb-4">
-              Print Quotation
+        <div className=" flex flex-row items-center justify-between gap-2 mb-4">
+          <Link to="/quotations">
+            <ArrowLeft className="text-white bg-blue-500 p-1 w-8 h-8 cursor-pointer rounded-full hover:bg-blue-600 transition-colors" />
+          </Link>
+          <div className="flex flex-row items-center gap-2">
+            <ReactToPrint
+              trigger={() => (
+                <button className=" bg-blue-500 text-white py-2 px-4 rounded">
+                  Print Quotation
+                </button>
+              )}
+              content={() => printRef.current}
+            />
+
+            <button
+              className="bg-green-500 text-white py-2 px-4 rounded flex items-center justify-center gap-2 disabled:opacity-50"
+              onClick={whatsappPdf}
+              disabled={whatsappLoading}
+            >
+              {whatsappLoading ? (
+                <>
+                  <svg
+                    className="animate-spin h-4 w-4 text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8H4z"
+                    ></path>
+                  </svg>
+                  Loading...
+                </>
+              ) : (
+                "WhatsApp"
+              )}
             </button>
-          )}
-          content={() => printRef.current}
-        />
-      
-      <button
-  className="bg-green-500 text-white py-2 px-4 rounded mb-4 flex items-center justify-center gap-2 disabled:opacity-50"
-  onClick={whatsappPdf}
-  disabled={whatsappLoading}
->
-  {whatsappLoading ? (
-    <>
-      <svg
-        className="animate-spin h-4 w-4 text-white"
-        viewBox="0 0 24 24"
-        fill="none"
-      >
-        <circle
-          className="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          strokeWidth="4"
-        ></circle>
-        <path
-          className="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8v8H4z"
-        ></path>
-      </svg>
-      Loading...
-    </>
-  ) : (
-    "WhatsApp"
-  )}
-</button>
-
-
-          
-       </div>
+          </div>
+        </div>
 
         <div ref={printRef} className="print-container  ">
           <div className="grid grid-cols-3 gap-4 mb-6 border-b pb-4">
@@ -330,6 +325,8 @@ const ViewQuotions = () => {
                       {item.product_category} {item.product_sub_category}
                       <p className="text-sm text-black">
                         Brand: {item.quotation_sub_brand}
+                        <br />
+                        {item.quotation_sub_design_no}
                       </p>
                     </td>
                     <td className="p-2 border border-black">
@@ -371,28 +368,27 @@ const ViewQuotions = () => {
               </tbody>
             </table>
           </div>
-          {(viewQuotions?.quotation_shipping || viewQuotions?.quotation_delivery) && (
-  
+          {(viewQuotions?.quotation_shipping ||
+            viewQuotions?.quotation_delivery) && (
+            <div className="mt-4 flex flex-row gap-4">
+              <div className="h-20 border border-black bg-white w-1/2">
+                <textarea
+                  className="w-full h-full resize-none p-2 text-sm text-black outline-none bg-transparent"
+                  placeholder="Delivery Address"
+                  readOnly
+                  value={viewQuotions?.quotation_delivery || ""}
+                />
+              </div>
 
-          <div className="mt-4 flex flex-row gap-4">
-            <div className="h-20 border border-black bg-white w-1/2">
-              <textarea
-                className="w-full h-full resize-none p-2 text-sm text-black outline-none bg-transparent"
-                placeholder="Delivery Address"
-                readOnly
-                value={viewQuotions?.quotation_delivery || ""}
-              />
+              <div className="h-20 border border-black bg-white w-1/2">
+                <textarea
+                  className="w-full h-full resize-none p-2 text-sm text-black outline-none bg-transparent"
+                  placeholder="Billing Address"
+                  readOnly
+                  value={viewQuotions?.quotation_shipping || ""}
+                />
+              </div>
             </div>
-
-            <div className="h-20 border border-black bg-white w-1/2">
-              <textarea
-                className="w-full h-full resize-none p-2 text-sm text-black outline-none bg-transparent"
-                placeholder="Billing Address"
-                readOnly
-                value={viewQuotions?.quotation_shipping || ""}
-              />
-            </div>
-          </div>
           )}
         </div>
       </div>

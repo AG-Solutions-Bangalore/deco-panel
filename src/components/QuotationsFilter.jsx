@@ -7,27 +7,31 @@ const QuotationsFilter = () => {
 
   const handleButtonClick = (path) => {
     navigate(path);
-   
   };
 
   const buttons = [
     {
-      label: "Quotation Submitted",
+      label: "Open Quotation",
       path: "/quotations",
       color: "from-blue-500 to-cyan-400",
       hoverColor: "hover:bg-blue-50",
       textColor: "text-blue-900",
     },
-    
+
     {
-      label: "All Quotation",
+      label: "Processing Quotation",
       path: "/all-quotations",
       color: "from-purple-500 to-indigo-400",
       hoverColor: "hover:bg-purple-50",
       textColor: "text-purple-900",
     },
-   
-   
+    {
+      label: "Completed Quotation",
+      path: "/completed-quotation",
+      color: "from-yellow-500 to-orange-300",
+      hoverColor: "hover:bg-yellow-50",
+      textColor: "text-yellow-900",
+    },
   ];
 
   return (
@@ -45,7 +49,9 @@ const QuotationsFilter = () => {
           >
             {button.label}
             {location.pathname !== button.path && (
-              <span className={`absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r ${button.color}  group-hover:w-full transition-all duration-300`}></span>
+              <span
+                className={`absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r ${button.color}  group-hover:w-full transition-all duration-300`}
+              ></span>
             )}
           </button>
         ))}
@@ -55,5 +61,3 @@ const QuotationsFilter = () => {
 };
 
 export default QuotationsFilter;
-
-

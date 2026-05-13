@@ -7,7 +7,6 @@ const CreateOrderFilter = () => {
 
   const handleButtonClick = (path) => {
     navigate(path);
-   
   };
 
   const buttons = [
@@ -18,7 +17,7 @@ const CreateOrderFilter = () => {
       hoverColor: "hover:bg-blue-50",
       textColor: "text-blue-900",
     },
-    
+
     {
       label: "Pending Order List",
       path: "/pending-order-list",
@@ -27,13 +26,12 @@ const CreateOrderFilter = () => {
       textColor: "text-purple-900",
     },
     {
-      label: "Order List",
+      label: "Processed Order",
       path: "/order-list",
       color: "from-yellow-500 to-orange-300",
       hoverColor: "hover:bg-yellow-50",
       textColor: "text-yellow-900",
     },
-   
   ];
 
   return (
@@ -51,7 +49,9 @@ const CreateOrderFilter = () => {
           >
             {button.label}
             {location.pathname !== button.path && (
-              <span className={`absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r ${button.color}  group-hover:w-full transition-all duration-300`}></span>
+              <span
+                className={`absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r ${button.color}  group-hover:w-full transition-all duration-300`}
+              ></span>
             )}
           </button>
         ))}
@@ -61,5 +61,3 @@ const CreateOrderFilter = () => {
 };
 
 export default CreateOrderFilter;
-
-
